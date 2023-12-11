@@ -110,7 +110,14 @@
                     </labs:SettingsCard.HeaderIcon>
                     <ToggleSwitch IsOn="{x:Bind ViewModel.AutoStart, Mode=TwoWay}"/>
                 </labs:SettingsCard>
-                
+
+                <labs:SettingsCard x:Uid="AutoCloseSettings" IsEnabled="{x:Bind ViewModel.HasAdmin, Mode=OneWay}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xECC9;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <ToggleSwitch IsOn="{x:Bind ViewModel.AutoClose, Mode=TwoWay}"/>
+                </labs:SettingsCard>
+
                 <labs:SettingsExpander x:Uid="RiskySettings">
                     <labs:SettingsExpander.HeaderIcon>
                         <FontIcon Glyph="&#xE7BA;" />

@@ -40,7 +40,7 @@ public class MainStandalone : IMainService
         // Kill our threads
         _logger.LogDebug("Cancelling token sources...");
         MasterCancellationTokenSource.Cancel();
-        
+
         _logger.LogDebug("Resetting our time end period...");
         Utils.TimeEndPeriod(1);
         

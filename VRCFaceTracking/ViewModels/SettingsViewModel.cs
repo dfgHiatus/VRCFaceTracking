@@ -33,12 +33,17 @@ public class SettingsViewModel : ObservableRecipient
         get;
         set;
     }
-    
+
     private OpenVRService OpenVRService
     {
         get;
     }
-    
+
+    private ProcessService ProcessService
+    {
+        get;
+    }
+
     public List<GithubContributor> Contributors
     {
         get => _contributors;
@@ -55,18 +60,31 @@ public class SettingsViewModel : ObservableRecipient
         }
     }
 
+    public bool AutoClose
+    {
+        get => ProcessService.AutoClose;
+        set
+        {
+            ProcessService.AutoClose = value;
+            OnPropertyChanged();
+        }
+    }
+
     public bool IsOpenVREnabled => OpenVRService.IsInitialized;
+
+    public bool HasAdmin => Utils.HasAdmin;
 
     private async void LoadContributors()
     {
         Contributors = await GithubService.GetContributors("benaclejames/VRCFaceTracking");
     }
 
-    public SettingsViewModel(IThemeSelectorService themeSelectorService, GithubService githubService, OpenVRService openVRService)
+    public SettingsViewModel(IThemeSelectorService themeSelectorService, GithubService githubService, OpenVRService openVRService, ProcessService processService)
     {
         _themeSelectorService = themeSelectorService;
         GithubService = githubService;
         OpenVRService = openVRService;
+        ProcessService = processService;
 
         _elementTheme = _themeSelectorService.Theme;
 

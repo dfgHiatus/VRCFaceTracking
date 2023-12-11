@@ -108,6 +108,7 @@ public partial class App : Application
             services.AddSingleton<UnifiedTracking>();
             services.AddSingleton<ILibManager, UnifiedLibManager>();
             services.AddTransient<OpenVRService>();
+            services.AddSingleton<ProcessService>();
 
             // Views and ViewModels
             services.AddTransient<ModuleRegistryViewModel>();

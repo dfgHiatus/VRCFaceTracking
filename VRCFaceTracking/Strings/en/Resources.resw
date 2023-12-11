@@ -320,6 +320,12 @@
   <data name="AutoStartSettings.Description" xml:space="preserve">
     <value>Auto Start when SteamVR is launched</value>
   </data>
+  <data name="AutoCloseSettings.Header" xml:space="preserve">
+    <value>Auto Close</value>
+  </data>
+  <data name="AutoCloseSettings.Description" xml:space="preserve">
+    <value>Auto Close when SteamVR is closed (requires admin)</value>
+  </data>
   <data name="CalibrationEnabledToggle.Header" xml:space="preserve">
     <value>Calibration Enabled</value>
   </data>
