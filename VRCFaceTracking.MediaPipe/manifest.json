@@ -1,7 +1,7 @@
 {
  "ModuleId": "0db1d289-fc01-4fee-ba17-6dab3d8c2e6e",
  "AuthorName": "dfgHiatus and Codel1417",
- "DllFileName": "",
+ "DllFileName": "VRCFaceTracking.MediaPipe.dll",
  "Downloads": 0,
  "DownloadUrl": "https://github.com/dfgHiatus/VRCFaceTracking/releases/download/v1.0.0/VRCFaceTracking.MediaPipe.zip",
  "LastUpdated": "2023-11-02T01:08:01Z",
@@ -12,5 +12,5 @@
  "Ratings": 0,
  "RatingSum": 0,
  "UsageInstructions": "For complete instructions, please refer to the project page.",
- "Version": "1.0" 
+ "Version": "1.0"
 }
