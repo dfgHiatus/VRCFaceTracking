@@ -26,7 +26,12 @@ public class FileService : IFileService
         }
 
         var fileContent = JsonConvert.SerializeObject(content);
+#if NET7_0_OR_GREATER
         await File.WriteAllTextAsync(Path.Combine(folderPath, fileName), fileContent, Encoding.UTF8);
+#else
+        File.WriteAllText(Path.Combine(folderPath, fileName), fileContent, Encoding.UTF8);
+        await Task.CompletedTask;
+#endif
     }
 
     public void Delete(string folderPath, string fileName)

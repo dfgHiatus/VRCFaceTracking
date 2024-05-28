@@ -99,7 +99,11 @@ public class OscRecvService : BackgroundService
 
             try
             {
+#if NET7_0_OR_GREATER
                 var bytesReceived = await _recvSocket.ReceiveAsync(_recvBuffer, _linkedToken.Token);
+#else
+                var bytesReceived = await _recvSocket.ReceiveAsync(new ArraySegment<byte>(_recvBuffer), SocketFlags.None);
+#endif
                 var offset = 0;
                 var newMsg = await Task.Run(() => OscMessage.TryParseOsc(_recvBuffer, bytesReceived, ref offset), stoppingToken);
                 if (newMsg == null)
@@ -118,7 +122,7 @@ public class OscRecvService : BackgroundService
                 }
                 
                 _logger.LogError("Error encountered in OSC Receive thread: {e}", e);
-                SentrySdk.CaptureException(e, scope => scope.SetExtra("recvBuffer", _recvBuffer));
+                //SentrySdk.CaptureException(e, scope => scope.SetExtra("recvBuffer", _recvBuffer));
             }
         }
     }

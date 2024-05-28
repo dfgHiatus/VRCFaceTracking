@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Net;
+using System.Net.Http;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using VRCFaceTracking.Core.Contracts;
 using VRCFaceTracking.Core.mDNS;
@@ -24,7 +26,9 @@ public class OscQueryConfigParser
         _multicastDnsService = multicastDnsService;
     }
 
+#if NET7_0_OR_GREATER
     private readonly HttpClient _httpClient = new();
+#endif
 
     public async Task<(IAvatarInfo avatarInfo, List<Parameter> relevantParameters)?> ParseAvatar(string avatarId = null)
     {
@@ -39,6 +43,7 @@ public class OscQueryConfigParser
             var httpEndpoint = "http://" + _multicastDnsService.VrchatClientEndpoint + "/avatar";
 
             // Get the response
+#if NET7_0_OR_GREATER
             var response = await _httpClient.GetAsync(httpEndpoint);
             if (!response.IsSuccessStatusCode)
             {
@@ -47,6 +52,11 @@ public class OscQueryConfigParser
 
             var avatarConfig =
                 JsonConvert.DeserializeObject<OscQueryNode>(await response.Content.ReadAsStringAsync());
+#else
+            using WebClient webClient = new WebClient();
+            var avatarConfig =
+                JsonConvert.DeserializeObject<OscQueryNode>(webClient.DownloadString(httpEndpoint));
+#endif
             _logger.LogDebug(avatarConfig.ToString());
             var avatarInfo = new OscQueryAvatarInfo(avatarConfig);
 
@@ -77,7 +87,7 @@ public class OscQueryConfigParser
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            SentrySdk.CaptureException(e, scope => scope.SetExtra("endpoint", _multicastDnsService.VrchatClientEndpoint));
+            //SentrySdk.CaptureException(e, scope => scope.SetExtra("endpoint", _multicastDnsService.VrchatClientEndpoint));
             return null;
         }
     }

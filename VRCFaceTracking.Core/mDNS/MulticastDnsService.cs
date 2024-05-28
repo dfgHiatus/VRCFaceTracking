@@ -228,7 +228,11 @@ public partial class MulticastDnsService : ObservableObject
     {
         while (!ct.IsCancellationRequested)
         {
+#if NET7_0_OR_GREATER
             var result = await client.ReceiveAsync(ct);
+#else
+            var result = await client.ReceiveAsync();
+#endif
 
             if (!_localIpAddresses.Any(i => i.Equals(result.RemoteEndPoint.Address)))
             {
@@ -248,7 +252,7 @@ public partial class MulticastDnsService : ObservableObject
             }
             catch (Exception e)
             {
-                SentrySdk.CaptureException(e, scope => scope.SetExtra("bytes", result.Buffer));
+                //SentrySdk.CaptureException(e, scope => scope.SetExtra("bytes", result.Buffer));
             }
         }
     }

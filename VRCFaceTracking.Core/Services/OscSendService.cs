@@ -78,7 +78,12 @@ public class OscSendService
             return;
         }
 
+#if NET7_0_OR_GREATER
         await _sendSocket?.SendAsync(_sendBuffer[..nextByteIndex])!;
+#else
+        var segment = new ArraySegment<byte>(_sendBuffer, 0, nextByteIndex);
+        _sendSocket?.Send(segment.Array!, segment.Offset, segment.Count, SocketFlags.None);
+#endif
         OnMessagesDispatched(1);
     }
 
@@ -89,7 +94,12 @@ public class OscSendService
         while (index < cbt.Length)
         {
             var length = await Task.Run(() => fti_osc.create_osc_bundle(_sendBuffer, cbt, messages.Length, ref index), ct);
+#if NET7_0_OR_GREATER
             await _sendSocket?.SendAsync(_sendBuffer[..length])!;
+#else
+            var segment = new ArraySegment<byte>(_sendBuffer, 0, length);
+            _sendSocket?.Send(segment.Array!, segment.Offset, segment.Count, SocketFlags.None);
+#endif
         }
         OnMessagesDispatched(index);
     }

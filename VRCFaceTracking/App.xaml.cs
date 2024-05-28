@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
+using Sentry;
 using Sentry.Protocol;
 using VRCFaceTracking.Activation;
 using VRCFaceTracking.Contracts.Services;

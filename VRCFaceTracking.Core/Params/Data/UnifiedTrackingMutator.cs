@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using VRCFaceTracking.Core.Contracts.Services;
 using VRCFaceTracking.Core.Models;
 using VRCFaceTracking.Core.Params.Expressions;
+using VRCFaceTracking.Core.Types;
 
 namespace VRCFaceTracking.Core.Params.Data;
 
@@ -45,7 +46,9 @@ public partial class UnifiedTrackingMutator : ObservableObject
         _inputBuffer = new UnifiedTrackingData();
     }
 
-    static T SimpleLerp<T>(T input, T previousInput, float value) => (dynamic)input * (1.0f - value) + (dynamic)previousInput * value;
+    //static T SimpleLerp<T>(T input, T previousInput, float value) => (dynamic)input * (1.0f - value) + (dynamic)previousInput * value;
+    static float SimpleLerp(float input, float previousInput, float value) => input * (1.0f - value) + previousInput * value;
+    static Vector2 SimpleLerp(Vector2 input, Vector2 previousInput, float value) => input * (1.0f - value) + previousInput * value;
 
     private void Calibrate(ref UnifiedTrackingData inputData, float calibrationWeight)
     {

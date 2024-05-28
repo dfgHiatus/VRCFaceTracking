@@ -42,7 +42,7 @@ public class ParameterSenderService : BackgroundService
             }
             catch (Exception e)
             {
-                SentrySdk.CaptureException(e, scope =>
+                /*SentrySdk.CaptureException(e, scope =>
                 {
                     var i = 0;
                     foreach (var msg in SendQueue)
@@ -52,7 +52,7 @@ public class ParameterSenderService : BackgroundService
                         scope.SetExtra($"Value 0 {i}", msg.Value);
                         i++;
                     }
-                });
+                });*/
             }
         }
     }

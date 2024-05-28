@@ -1,4 +1,5 @@
 ﻿using System.IO.Compression;
+using System.Net;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using VRCFaceTracking.Core.Helpers;
@@ -53,11 +54,16 @@ public class ModuleInstaller
 
     private static async Task DownloadModuleToFile(TrackingModuleMetadata moduleMetadata, string filePath)
     {
+#if NET7_0_OR_GREATER
         using var client = new HttpClient();
         var response = await client.GetAsync(moduleMetadata.DownloadUrl);
         var content = await response.Content.ReadAsByteArrayAsync();
         await File.WriteAllBytesAsync(filePath, content);
         await Task.CompletedTask;
+#else
+        using var client = new WebClient();
+        await client.DownloadFileTaskAsync(moduleMetadata.DownloadUrl, filePath);
+#endif
     }
 
     /* Removes the 'downloaded from the internet' attribute from a module
@@ -99,7 +105,13 @@ public class ModuleInstaller
 
         // Else we'll try find the one with the closest name to the module using Levenshtein distance
         var targetFileName = Path.GetFileNameWithoutExtension(moduleMetadata.DownloadUrl);
-        var dllFile = dllFiles.Select(x => new { FileName = Path.GetFileNameWithoutExtension(x), Distance = LevenshteinDistance.Calculate(targetFileName, Path.GetFileNameWithoutExtension(x)) }).MinBy(x => x.Distance);
+        var dllFileList = dllFiles.Select(x => new
+        {
+            FileName = Path.GetFileNameWithoutExtension(x),
+            Distance = LevenshteinDistance.Calculate(targetFileName, Path.GetFileNameWithoutExtension(x))
+        }).ToList();
+        var dllFileIndex = dllFileList.Min(x => x.Distance);
+        var dllFile = dllFileList.ElementAt(dllFileIndex);
 
         if (dllFile == null)
         {
@@ -139,8 +151,12 @@ public class ModuleInstaller
             Directory.Delete(tempDirectory, true);
             return null;
         }
-        
+
+#if NET7_0_OR_GREATER
         var moduleMetadata = await Json.ToObjectAsync<TrackingModuleMetadata>(await File.ReadAllTextAsync(moduleJsonPath));
+#else
+        var moduleMetadata = await Json.ToObjectAsync<TrackingModuleMetadata>(File.ReadAllText(moduleJsonPath));
+#endif
         if (moduleMetadata == null)
         {
             _logger.LogError("Module {module} contains an invalid module.json file", fileName);
@@ -166,7 +182,11 @@ public class ModuleInstaller
         }
         
         // Now we write the module.json file to the module directory
+#if NET7_0_OR_GREATER
         await File.WriteAllTextAsync(Path.Combine(moduleDirectory, "module.json"), JsonConvert.SerializeObject(moduleMetadata, Formatting.Indented));
+#else
+        File.WriteAllText(Path.Combine(moduleDirectory, "module.json"), JsonConvert.SerializeObject(moduleMetadata, Formatting.Indented));
+#endif
         
         // Finally, we return the module's dll file name
         return Path.Combine(moduleDirectory, moduleMetadata.DllFileName);
@@ -282,7 +302,11 @@ public class ModuleInstaller
         
         // Now we can overwrite the module.json file with the latest metadata
         var moduleJsonPath = Path.Combine(moduleDirectory, "module.json");
+#if NET7_0_OR_GREATER
         await File.WriteAllTextAsync(moduleJsonPath, JsonConvert.SerializeObject(moduleMetadata, Formatting.Indented));
+#else
+        File.WriteAllText(moduleJsonPath, JsonConvert.SerializeObject(moduleMetadata, Formatting.Indented));
+#endif
         
         _logger.LogInformation("Installed module {module} to {moduleDirectory}", moduleMetadata.ModuleId, moduleDirectory);
         

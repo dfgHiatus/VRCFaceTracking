@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
 using VRCFaceTracking.Core.Contracts.Services;
 using VRCFaceTracking.Core.Library;
@@ -49,7 +50,7 @@ public class MainStandalone : IMainService
     public Task InitializeAsync()
     {
         // Ensure OSC is enabled
-        if (OperatingSystem.IsWindows() && VRChat.ForceEnableOsc()) // If osc was previously not enabled
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && VRChat.ForceEnableOsc()) // If osc was previously not enabled
         {
             _logger.LogWarning("VRCFT detected OSC was disabled and automatically enabled it.");
             // If we were launched after VRChat

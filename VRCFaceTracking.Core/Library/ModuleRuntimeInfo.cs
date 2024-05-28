@@ -1,11 +1,9 @@
-﻿using System.Runtime.Loader;
-
-namespace VRCFaceTracking.Core.Library;
+﻿namespace VRCFaceTracking.Core.Library;
 
 public struct ModuleRuntimeInfo
 {
     public ExtTrackingModule Module;
-    public AssemblyLoadContext AssemblyLoadContext;
+    public ASL asl;
     public CancellationTokenSource UpdateCancellationToken;
     public Thread UpdateThread;
 }

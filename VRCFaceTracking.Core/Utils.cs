@@ -31,9 +31,9 @@ public static class Utils
     [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     public static extern uint GetFileAttributes(string lpFileName);
         
-    public static readonly bool HasAdmin = !OperatingSystem.IsWindows() || new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
+    public static readonly bool HasAdmin = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
         
-    public static readonly string UserAccessibleDataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "VRCFaceTracking");
-    public static readonly string PersistentDataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "VRCFaceTracking");
-    public static readonly string CustomLibsDirectory = PersistentDataDirectory + "\\CustomLibs";
+    public static string UserAccessibleDataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "VRCFaceTracking");
+    public static string PersistentDataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "VRCFaceTracking");
+    public static string CustomLibsDirectory = PersistentDataDirectory + "\\CustomLibs";
 }
