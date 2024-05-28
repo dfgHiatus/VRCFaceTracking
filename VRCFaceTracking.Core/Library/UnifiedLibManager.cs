@@ -115,7 +115,7 @@ public class UnifiedLibManager : ILibManager
         return null;
     }
 
-    public List<ASL> LoadAssembliesFromPath(string[] path)
+    private List<ASL> LoadAssembliesFromPath(string[] path)
     {
         var returnList = new List<ASL>();
         foreach (var dll in path)
