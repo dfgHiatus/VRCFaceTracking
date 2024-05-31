@@ -15,7 +15,12 @@ public class ModuleDataService : IModuleDataService
 
     private readonly IIdentityService _identityService;
     private readonly ILogger<ModuleDataService> _logger;
+#if NET7_0_OR_GREATER
     private readonly HttpClient _httpClient;
+#else
+    private readonly WebClient _webClient = new WebClient();
+    private Uri BaseUri = new Uri(BaseUrl);
+#endif
 
     private const string BaseUrl = "https://rjlk4u22t36tvqz3bvbkwv675a0wbous.lambda-url.us-east-1.on.aws/";
 
@@ -23,13 +28,16 @@ public class ModuleDataService : IModuleDataService
     {
         _identityService = identityService;
         _logger = logger;
+#if NET7_0_OR_GREATER
         _httpClient = new HttpClient();
         _httpClient.BaseAddress = new Uri(BaseUrl);
+#endif
     }
 
     private async Task<IEnumerable<InstallableTrackingModule>> AllModules()
     {
         // This is where we make the actual request to the API at modules and get the list of modules.
+#if NET7_0_OR_GREATER
         var response = await _httpClient.GetAsync("modules");
         if (!response.IsSuccessStatusCode)
         {
@@ -37,6 +45,9 @@ public class ModuleDataService : IModuleDataService
         }
 
         var content = await response.Content.ReadAsStringAsync();
+#else
+        var content = _webClient.DownloadString(new Uri(BaseUri, "modules"));
+#endif
         return await Json.ToObjectAsync<List<InstallableTrackingModule>>(content);
     }
 
@@ -52,6 +63,7 @@ public class ModuleDataService : IModuleDataService
         // Send a PATCH request to the downloads endpoint with the module ID in the body
         var rating = new RatingObject
             { UserId = _identityService.GetUniqueUserId(), ModuleId = moduleMetadata.ModuleId.ToString() };
+#if NET7_0_OR_GREATER
         var content = new StringContent(JsonConvert.SerializeObject(rating), Encoding.UTF8, "application/json");
         var response = await _httpClient.PatchAsync("downloads", content);
         
@@ -59,8 +71,10 @@ public class ModuleDataService : IModuleDataService
         {
             return;
         }
-
         _logger.LogError("Failed to increment downloads for {ModuleId}. Status code: {StatusCode}", moduleMetadata.ModuleId, response.StatusCode);
+#else
+        _webClient.UploadString(new Uri(BaseUri, "downloads"), "PATCH", JsonConvert.SerializeObject(rating));
+#endif
     }
 
     public IEnumerable<InstallableTrackingModule> GetLegacyModules()
@@ -95,6 +109,7 @@ public class ModuleDataService : IModuleDataService
 
         var rating = new RatingObject
             { UserId = _identityService.GetUniqueUserId(), ModuleId = moduleMetadata.ModuleId.ToString() };
+#if NET7_0_OR_GREATER
         var response = await _httpClient.SendAsync(new HttpRequestMessage
         {
             Method = HttpMethod.Get,
@@ -109,8 +124,13 @@ public class ModuleDataService : IModuleDataService
             _logger.LogDebug("Failed to get user rating for module {ModuleId}", moduleMetadata.ModuleId);
             return null;
         }
-
+        
         var ratingResponse = await Json.ToObjectAsync<RatingObject>(await response.Content.ReadAsStringAsync());
+#else
+        var response = _webClient.UploadString(new Uri(BaseUri, "rating"), WebRequestMethods.Http.Get,
+            JsonConvert.SerializeObject(rating));
+        var ratingResponse = await Json.ToObjectAsync<RatingObject>(response);
+#endif
         
         _logger.LogDebug("Rating for {ModuleId} was {Rating}. Caching...", moduleMetadata.ModuleId, ratingResponse.Rating);
         _ratingCache[moduleMetadata.ModuleId] = ratingResponse.Rating;
@@ -121,7 +141,8 @@ public class ModuleDataService : IModuleDataService
     {
         // Same format as get but we PUT this time
         var ratingObject = new RatingObject{UserId = _identityService.GetUniqueUserId(), ModuleId = moduleMetadata.ModuleId.ToString(), Rating = rating};
-        
+
+#if NET7_0_OR_GREATER
         var content = new StringContent(JsonConvert.SerializeObject(ratingObject), Encoding.UTF8, "application/json");
         var response = await _httpClient.PutAsync("rating", content);
         
@@ -130,6 +151,11 @@ public class ModuleDataService : IModuleDataService
             _logger.LogError("Failed to set rating for {ModuleId} to {Rating}. Status code: {StatusCode}", moduleMetadata.ModuleId, rating, response.StatusCode);
             return;
         }
+#else
+        _webClient.UploadString(new Uri(BaseUri, "rating"), WebRequestMethods.Http.Put,
+            JsonConvert.SerializeObject(ratingObject));
+#endif
+        
         _logger.LogDebug("Rating for {ModuleId} was set to {Rating}. Caching...", moduleMetadata.ModuleId, rating);
         _ratingCache[moduleMetadata.ModuleId] = rating;
     }
@@ -157,7 +183,7 @@ public class ModuleDataService : IModuleDataService
             try
             {
                 var module = JsonConvert.DeserializeObject<InstallableTrackingModule>(moduleJson);
-                module.AssemblyLoadPath = Path.Combine(moduleFolder, module.DllFileName);
+                module!.AssemblyLoadPath = Path.Combine(moduleFolder, module.DllFileName);
                 installedModules.Add(module);
             }
             catch (Exception e)

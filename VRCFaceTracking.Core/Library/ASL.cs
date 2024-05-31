@@ -12,7 +12,7 @@ public class ASL
 {
     private AppDomain appDomain;
     private Assembly _;
-    public Assembly Assembly;
+    public Assembly? Assembly;
 
     private string filePath;
     
@@ -47,4 +47,6 @@ public class ASL
 #elif NETSTANDARD || NETFRAMEWORK
     public void Unload() => AppDomain.Unload(appDomain);
 #endif
+
+    public override string ToString() => Assembly?.GetName().Name ?? GetType().Name;
 }

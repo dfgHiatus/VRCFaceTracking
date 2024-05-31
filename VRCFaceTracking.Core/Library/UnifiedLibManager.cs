@@ -65,7 +65,7 @@ public class UnifiedLibManager : ILibManager
             List<ASL> asls = LoadAssembliesFromPath(modulePaths.ToArray());
             AvailableModules = new List<Assembly>();
             foreach (ASL asl in asls)
-                AvailableModules.Add(asl.Assembly);
+                AvailableModules.Add(asl.Assembly!);
 
             // Attempt to initialize the requested runtimes.
             if (AvailableModules != null)
@@ -93,7 +93,7 @@ public class UnifiedLibManager : ILibManager
 
     private ExtTrackingModule LoadExternalModule(ASL asl)
     {
-        _logger.LogInformation("Loading External Module " + asl.Assembly.FullName);
+        _logger.LogInformation("Loading External Module " + asl);
 
         try
         {
