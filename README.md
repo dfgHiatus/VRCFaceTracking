@@ -35,7 +35,7 @@ For a more in-depth example, see [FaceTrackingManager.cs](https://github.com/Tig
 
 ## ⛓ External Modules
 
-Modules for Unity must be rebuilt with this assembly for netstandard2.1.
+Modules for Unity must be rebuilt with this assembly. Be sure to build assemblies with `net7.0`, `netstandard2.1`, and `net481`!
 
 Use the following modules to add support for other hardware, when using VRCFaceTracking in Unity:
 
