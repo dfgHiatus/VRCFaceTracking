@@ -41,3 +41,4 @@ Use the following modules to add support for other hardware, when using VRCFaceT
 
 * [SRanipalTrackingModule](https://github.com/TigersUniverse/SRanipalTrackingModule) - Adds support for the Vive Pro Eye and the Vive Lip Tracker
 * [VRCFTOmniceptModule](https://github.com/TigersUniverse/VRCFTOmniceptModule) - Adds support for HP Omnicept eye tracking
+* [VRCFaceTracking-LiveLink](https://github.com/TigersUniverse/VRCFaceTracking-LiveLink) - Adds support for the Live Link app
