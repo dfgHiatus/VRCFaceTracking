@@ -44,3 +44,5 @@ Use the following modules to add support for other hardware, when using VRCFaceT
 * [VRCFaceTracking-LiveLink](https://github.com/TigersUniverse/VRCFaceTracking-LiveLink) - Adds support for the Live Link app
 * [ETVRTrackingModule](https://github.com/TigersUniverse/ETVRTrackingModule) - Adds support for ETVR
 * [VRCFT-Babble](https://github.com/TigersUniverse/VRCFT-Babble) - Adds support for Babble
+* [VirtualDesktop.VRCFaceTracking](https://github.com/TigersUniverse/VirtualDesktop.VRCFaceTracking) - Adds support for Virtual Desktop Face Tracking
+* [LinkFT](https://github.com/TigersUniverse/LinkFT) - Adds support for SteamLink Face Tracking
