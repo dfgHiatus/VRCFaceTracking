@@ -46,3 +46,4 @@ Use the following modules to add support for other hardware, when using VRCFaceT
 * [VRCFT-Babble](https://github.com/TigersUniverse/VRCFT-Babble) - Adds support for Babble
 * [VirtualDesktop.VRCFaceTracking](https://github.com/TigersUniverse/VirtualDesktop.VRCFaceTracking) - Adds support for Virtual Desktop Face Tracking
 * [LinkFT](https://github.com/TigersUniverse/LinkFT) - Adds support for SteamLink Face Tracking
+* [VRCFT-ALVR](https://github.com/TigersUniverse/VRCFT-ALVR) - Adds support for ALVR Face Tracking
