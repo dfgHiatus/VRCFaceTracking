@@ -35,15 +35,4 @@ For a more in-depth example, see [FaceTrackingManager.cs](https://github.com/Tig
 
 ## ⛓ External Modules
 
-Modules for Unity must be rebuilt with this assembly. Be sure to build assemblies with `net7.0`, `netstandard2.1`, and `net481`!
-
-Use the following modules to add support for other hardware, when using VRCFaceTracking in Unity:
-
-* [SRanipalTrackingModule](https://github.com/TigersUniverse/SRanipalTrackingModule) - Adds support for the Vive Pro Eye and the Vive Lip Tracker
-* [VRCFTOmniceptModule](https://github.com/TigersUniverse/VRCFTOmniceptModule) - Adds support for HP Omnicept eye tracking
-* [VRCFaceTracking-LiveLink](https://github.com/TigersUniverse/VRCFaceTracking-LiveLink) - Adds support for the Live Link app
-* [ETVRTrackingModule](https://github.com/TigersUniverse/ETVRTrackingModule) - Adds support for ETVR
-* [VRCFT-Babble](https://github.com/TigersUniverse/VRCFT-Babble) - Adds support for Babble
-* [VirtualDesktop.VRCFaceTracking](https://github.com/TigersUniverse/VirtualDesktop.VRCFaceTracking) - Adds support for Virtual Desktop Face Tracking
-* [LinkFT](https://github.com/TigersUniverse/LinkFT) - Adds support for SteamLink Face Tracking
-* [VRCFT-ALVR](https://github.com/TigersUniverse/VRCFT-ALVR) - Adds support for ALVR Face Tracking
+[Follow this link to be taken to the list of recompiled Modules](https://docs.hypernex.dev/docs/nexadamy/extra/facetracking#modules)
