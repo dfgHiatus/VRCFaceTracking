@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
+using VRCFaceTracking.BabbleNative;
 using VRCFaceTracking.Core.Contracts.Services;
 
 namespace VRCFaceTracking.Core.Library;
@@ -57,35 +58,38 @@ public class UnifiedLibManager : ILibManager
             // Kill lingering threads
             TeardownAllAndResetAsync();
 
-            // Find all modules
-            var modules = _moduleDataService.GetInstalledModules().Concat(_moduleDataService.GetLegacyModules());
-            var modulePaths = modules.Select(m => m.AssemblyLoadPath);
+            // DON'T Find all modules. Just use the hardcoded one to get around Android sandboxing
+            // var modules = _moduleDataService.GetInstalledModules().Concat(_moduleDataService.GetLegacyModules());
+            // var modulePaths = modules.Select(m => m.AssemblyLoadPath);
 
-            // Load all modules
-            List<ASL> asls = LoadAssembliesFromPath(modulePaths.ToArray());
-            AvailableModules = new List<Assembly>();
-            foreach (ASL asl in asls)
-                AvailableModules.Add(asl.Assembly!);
+            // DON'T Load all modules
+            // List<ASL> asls = LoadAssembliesFromPath(modulePaths.ToArray());
+            // AvailableModules = new List<Assembly>();
+            // foreach (ASL asl in asls)
+            //     AvailableModules.Add(asl.Assembly!);
 
             // Attempt to initialize the requested runtimes.
-            if (AvailableModules != null)
-            {
-                _logger.LogDebug("Initializing requested runtimes...");
-                InitRequestedRuntimes(asls);
-            }
-            else
-            {
-                _dispatcherService.Run(() =>
-                {
-                    LoadedModulesMetadata.Clear();
-                    LoadedModulesMetadata.Add(new ModuleMetadata
-                    {
-                        Active = false,
-                        Name = "No Modules Loaded"
-                    });
-                });
-                _logger.LogWarning("No modules loaded.");
-            }
+            //if (AvailableModules != null)
+            //{
+            //    _logger.LogDebug("Initializing requested runtimes...");
+            //    InitRequestedRuntimes(asls);
+            //}
+            //else
+            //{
+            //    _dispatcherService.Run(() =>
+            //    {
+            //        LoadedModulesMetadata.Clear();
+            //        LoadedModulesMetadata.Add(new ModuleMetadata
+            //        {
+            //            Active = false,
+            //            Name = "No Modules Loaded"
+            //        });
+            //    });
+            //    _logger.LogWarning("No modules loaded.");
+            //}
+
+            _logger.LogDebug("Initializing requested runtimes...");
+            InitRequestedRuntimes();
         });
         _logger.LogInformation("Starting initialization tracking");
         _initializeWorker.Start();
@@ -166,7 +170,7 @@ public class UnifiedLibManager : ILibManager
         return returnList;
     }
 
-    private void EnsureModuleThreadStarted(ExtTrackingModule module, ASL asl)
+    private void EnsureModuleThreadStarted(ExtTrackingModule module)
     {
         if (_moduleThreads.Any(pair => pair.Module == module))
         {
@@ -189,14 +193,14 @@ public class UnifiedLibManager : ILibManager
         {
             Module = module,
             UpdateCancellationToken = cts,
-            asl = asl,
+            asl = null,
             UpdateThread = thread
         };
 
         _moduleThreads.Add(runtimeModules);
     }
 
-    private void AttemptModuleInitialize(ExtTrackingModule module, ASL asl)
+    private void AttemptModuleInitialize(ExtTrackingModule module)
     {
         if (module.Supported is { SupportsEye: false, SupportsExpression: false })
         {
@@ -242,19 +246,16 @@ public class UnifiedLibManager : ILibManager
                 LoadedModulesMetadata.Add(module.ModuleInformation);
             }
         });
-        EnsureModuleThreadStarted(module, asl);
+        EnsureModuleThreadStarted(module);
     }
 
-    private void InitRequestedRuntimes(List<ASL> moduleType)
+    private void InitRequestedRuntimes()
     {
         _logger.LogInformation("Initializing runtimes...");
 
-        foreach (var module in moduleType.TakeWhile(_ => EyeStatus <= ModuleState.Uninitialized || ExpressionStatus <= ModuleState.Uninitialized))
-        {
-            _logger.LogInformation("Initializing {module}", module.ToString());
-            var loadedModule = LoadExternalModule(module);
-            AttemptModuleInitialize(loadedModule, module);
-        }
+        _logger.LogInformation("Initializing hard-coded Babble Module...");
+        var loadedModule = new BabbleModule();
+        AttemptModuleInitialize(loadedModule);
 
         if (_moduleThreads.Count == 0)
         {

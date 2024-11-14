@@ -180,18 +180,18 @@ public partial class UnifiedTrackingMutator : ObservableObject
 
     public async Task SaveCalibration()
     {
-        _logger.LogDebug("Saving configuration...");
-        await _localSettingsService.Save(this);
-        await _localSettingsService.SaveSettingAsync("Mutations", _mutationData, true);
-        _logger.LogDebug("Configuration saved.");
+        //_logger.LogDebug("Saving configuration...");
+        //await _localSettingsService.Save(this);
+        //await _localSettingsService.SaveSettingAsync("Mutations", _mutationData, true);
+        //_logger.LogDebug("Configuration saved.");
     }
 
     public async void LoadCalibration()
     {
         // Try to load config and propogate data into Unified if they exist.
-        _logger.LogDebug("Reading configuration...");
-        await _localSettingsService.Load(this);
-        _mutationData = await _localSettingsService.ReadSettingAsync("Mutations", new UnifiedMutationConfig(), true);
-        _logger.LogDebug("Configuration loaded.");
+        //_logger.LogDebug("Reading configuration...");
+        //await _localSettingsService.Load(this);
+        //_mutationData = await _localSettingsService.ReadSettingAsync("Mutations", new UnifiedMutationConfig(), true);
+        //_logger.LogDebug("Configuration loaded.");
     }
 }

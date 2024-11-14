@@ -72,19 +72,19 @@ public class ModuleInstaller
      */
     private bool RemoveZoneIdentifier(string path)
     {
-        string zoneFile = path + ":Zone.Identifier";
+        //string zoneFile = path + ":Zone.Identifier";
 
-        if (Utils.GetFileAttributes(zoneFile) == 0xffffffff) // INVALID_FILE_ATTRIBUTES
-            //zone file doesn't exist, everything's good
-            return false;
+        //if (Utils.GetFileAttributes(zoneFile) == 0xffffffff) // INVALID_FILE_ATTRIBUTES
+        //    //zone file doesn't exist, everything's good
+        //    return false;
 
-        if (Utils.DeleteFile(zoneFile))
-            _logger.LogDebug("Removing the downloaded file identifier from " + path);
-        else
-        {
-            _logger.LogError("Couldn't removed the 'file downloaded' mark from the " + path + " module! Please unblock the file manually");
-            return true;
-        }
+        //if (Utils.DeleteFile(zoneFile))
+        //    _logger.LogDebug("Removing the downloaded file identifier from " + path);
+        //else
+        //{
+        //    _logger.LogError("Couldn't removed the 'file downloaded' mark from the " + path + " module! Please unblock the file manually");
+        //    return true;
+        //}
 
         return false;
     }
