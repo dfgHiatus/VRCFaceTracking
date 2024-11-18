@@ -299,7 +299,8 @@ public class UnifiedLibManager : ILibManager
         }
 
         module.Module.Teardown();
-        module.asl.Unload();
+        // We set this to null earlier, nothing to do
+        // module.asl.Unload();
         
         return true;
     }
