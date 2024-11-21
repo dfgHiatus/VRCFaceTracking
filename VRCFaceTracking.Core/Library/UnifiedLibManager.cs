@@ -53,10 +53,10 @@ public class UnifiedLibManager : ILibManager
         });
 
         // Start Initialization
-        _initializeWorker = new Thread(() =>
-        {
+        //_initializeWorker = new Thread(() =>
+        //{
             // Kill lingering threads
-            TeardownAllAndResetAsync();
+            //TeardownAllAndResetAsync();
 
             // DON'T Find all modules. Just use the hardcoded one to get around Android sandboxing
             // var modules = _moduleDataService.GetInstalledModules().Concat(_moduleDataService.GetLegacyModules());
@@ -88,11 +88,16 @@ public class UnifiedLibManager : ILibManager
             //    _logger.LogWarning("No modules loaded.");
             //}
 
-            _logger.LogDebug("Initializing requested runtimes...");
-            InitRequestedRuntimes();
-        });
+            //_logger.LogDebug("Initializing requested runtimes...");
+            //InitRequestedRuntimes();
+        //}); 
+        //_logger.LogInformation("Starting initialization tracking");
+        //_initializeWorker.Start();
+
+        TeardownAllAndResetAsync();
+        _logger.LogDebug("Initializing requested runtimes...");
+        InitRequestedRuntimes();
         _logger.LogInformation("Starting initialization tracking");
-        _initializeWorker.Start();
     }
 
     private ExtTrackingModule LoadExternalModule(ASL asl)
@@ -187,6 +192,7 @@ public class UnifiedLibManager : ILibManager
             }
             _logger.LogDebug("Thread for {module} ended", module.GetType().Name);
         });
+        thread.Priority = ThreadPriority.Highest; // This actually helps a bit
         thread.Start();
 
         var runtimeModules = new ModuleRuntimeInfo
