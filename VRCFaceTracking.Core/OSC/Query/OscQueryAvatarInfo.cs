@@ -13,12 +13,12 @@ public class OscQueryAvatarInfo : IAvatarInfo
     public OscQueryAvatarInfo(OscQueryNode rootNode)
     {
         Name = "Half-baked OSCQuery impl";
-        if (!rootNode.Contents.ContainsKey("change"))
+        if (!rootNode.Contents.TryGetValue("change", out var value))
         {
             // We likely queried while an avatar was still loading. Return without parsing.
             return;
         }
-        Id = rootNode.Contents["change"].Value[0] as string;
+        Id = (string)value.Value[0];
         
         //TODO: Figure out a way to reconstruct the traditional address pattern instead of the whole thing.
         IEnumerable<IParameterDefinition> ConstructParameterArray(Dictionary<string, OscQueryNode> entries)
