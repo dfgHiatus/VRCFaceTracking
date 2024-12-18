@@ -57,7 +57,7 @@ public class BaseParam<T> : Parameter where T : struct
 
     public T ParamValue
     {
-        get => (T)OscMessage.Value;
+        get => _lastValue.Value;
         set
         {
             if (value.Equals(_lastValue))
