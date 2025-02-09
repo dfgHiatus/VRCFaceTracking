@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using VRCFaceTracking.Core.Contracts;
 using VRCFaceTracking.Core.Contracts.Services;
 using VRCFaceTracking.Core.Validation;
@@ -7,14 +8,15 @@ namespace VRCFaceTracking.Core.Models;
 
 public partial class OscTarget : ObservableValidator, IOscTarget
 {
-    [ObservableProperty] private bool _isConnected;
+    [ObservableProperty]
+    private bool _isConnected;
 
-    [ObservableProperty] [property: SavedSetting("OSCInPort", 9001)]
-
+    [ObservableProperty]
+    [property: SavedSetting("OSCInPort", 9001)]
     private int _inPort;
 
-    [ObservableProperty] [property: SavedSetting("OSCOutPort", 9000)]
-
+    [ObservableProperty]
+    [property: SavedSetting("OSCOutPort", 9000)]
     private int _outPort;
 
     [ObservableProperty]

@@ -26,7 +26,7 @@ public partial class UnifiedTrackingMutator : ObservableObject
         UnifiedTracking.Mutator = this;
         _logger = logger;
         _localSettingsService = localSettingsService;
-            
+
         Enabled = false;
         _inputBuffer = new UnifiedTrackingData();
     }
@@ -44,8 +44,8 @@ public partial class UnifiedTrackingMutator : ObservableObject
 
         _inputBuffer.CopyPropertiesOf(input);
 
-        foreach (var mutator in _mutations) 
-        { 
+        foreach (var mutator in _mutations)
+        {
             if (mutator.IsActive)
                 mutator.MutateData(ref _inputBuffer);
         }
@@ -77,7 +77,7 @@ public partial class UnifiedTrackingMutator : ObservableObject
         _logger.LogDebug("Mutations initialized successfully.");
     }
 
-    public async void Load()
+    public async Task Load()
     {
         // Try to load config and propogate data into Unified if they exist.
         _logger.LogDebug("Loading mutation data...");

@@ -19,17 +19,17 @@ public class TrackingModuleMetadata
         get;
         set;
     } = "Unknown";
-    
+
     public int Downloads
     {
         get; set;
     }
-    
+
     public int Ratings
     {
         get; set;
     }
-    
+
     public float Rating
     {
         get; set;
@@ -44,12 +44,12 @@ public class TrackingModuleMetadata
     {
         get; set;
     } = "(No name provided)";
-    
+
     public string ModuleDescription
     {
         get; set;
     } = "(No description provided)";
-    
+
     public string UsageInstructions
     {
         get; set;
@@ -65,7 +65,7 @@ public class TrackingModuleMetadata
         get;
         set;
     }
-    
+
     public string DllFileName
     {
         get; set;

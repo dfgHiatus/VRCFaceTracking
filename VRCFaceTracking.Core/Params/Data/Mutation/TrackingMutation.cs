@@ -15,9 +15,9 @@ using VRCFaceTracking.Core.Params.Data;
 namespace VRCFaceTracking.Core.Params.Data.Mutation;
 public enum MutationPriority
 {
-    Preprocessor, 
+    Preprocessor,
     None,
-    Postprocessor 
+    Postprocessor
 }
 
 public abstract partial class TrackingMutation

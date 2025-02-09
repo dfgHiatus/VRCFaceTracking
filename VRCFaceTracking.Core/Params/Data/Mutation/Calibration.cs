@@ -73,7 +73,7 @@ public class Calibration : TrackingMutation
             _currentStep = ClampStep(currentValue, sDelta * dT);
         }
 
-        private float ClampStep(float value, float factor) => (float)Math.Floor(value / factor) * factor; 
+        private float ClampStep(float value, float factor) => (float)Math.Floor(value / factor) * factor;
 
         private float StdDev(float[] data, float mean) =>
         (float)Math.Sqrt(data.Take((int)(_fixedIndex - 1)).Where(v => !float.IsNaN(v))
@@ -105,14 +105,14 @@ public class Calibration : TrackingMutation
                 var _stdDevLimit = Math.Pow(1f - Math.Max(0, _stdDev - 0.29f),3f);
                 var _meanLimit = 1f - Math.Max(0, _mean - 0.5f);
                 var _meanPusher = Math.Pow(2*_mean, 0.2f);
-                
-                var _confidence = (float)Math.Max(0f, Math.Min(1f, 
+
+                var _confidence = (float)Math.Max(0f, Math.Min(1f,
                     _variance *
                     _stdDevLimit *
                     _meanLimit *
                     _meanPusher
                 ));
-                
+
                 if (_confidence >= maxConfidence - cDelta)
                 {
                     var _lerp = 1f - (float)Math.Pow(confidence, 2f); // weighs new stats less the more confident we are.
@@ -132,7 +132,7 @@ public class Calibration : TrackingMutation
 
         public float CalculateParameter(float currentValue, float k)
         {
-            if (float.IsNaN(currentValue)) 
+            if (float.IsNaN(currentValue))
                 return currentValue;
             var adjustedMax = mean + k * stdDev;
             var curvedValue = (float)Math.Pow(currentValue, CurveAdjustedRange(adjustedMax));
@@ -197,8 +197,8 @@ public class Calibration : TrackingMutation
     public void LogData()
     {
         Logger.LogInformation("Logging Calibration data:" +
-                             $" delta: {sDelta}" + 
-                             $" points: {points}" + 
+                             $" delta: {sDelta}" +
+                             $" points: {points}" +
                              $" devationBias: {deviationBias}");
         for (int i = 0; i < calData.Shapes.Length; i++)
         {

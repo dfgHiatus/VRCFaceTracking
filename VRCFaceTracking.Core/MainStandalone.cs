@@ -19,7 +19,7 @@ public class MainStandalone : IMainService
     public Action<string, float> ParameterUpdate { get; set; } = (_, _) => { };
 
     public MainStandalone(
-        ILogger<MainStandalone> logger, 
+        ILogger<MainStandalone> logger,
         ILibManager libManager,
         UnifiedTrackingMutator mutator
         )
@@ -33,20 +33,23 @@ public class MainStandalone : IMainService
     {
         _logger.LogInformation("VRCFT Standalone Exiting!");
         await _mutator.Save();
-        
+
         _libManager.TeardownAllAndResetAsync();
-        
+
         _logger.LogDebug("Resetting our time end period...");
-        var timeEndRes = Utils.TimeEndPeriod(1);
-        if (timeEndRes != 0)
+        if (OperatingSystem.IsWindows())
         {
-            _logger.LogWarning($"TimeEndPeriod failed with HRESULT {timeEndRes}");
+            var timeEndRes = Utils.TimeEndPeriod(1);
+            if (timeEndRes != 0)
+            {
+                _logger.LogWarning($"TimeEndPeriod failed with HRESULT {timeEndRes}");
+            }
         }
-        
+
         _logger.LogDebug("Teardown complete. Awaiting exit...");
     }
 
-    public Task InitializeAsync()
+    public async Task InitializeAsync()
     {
         // Ensure OSC is enabled
         if (OperatingSystem.IsWindows() && VRChat.ForceEnableOsc()) // If osc was previously not enabled
@@ -57,13 +60,13 @@ public class MainStandalone : IMainService
                 _logger.LogError(
                     "However, VRChat was running while this change was made.\n" +
                     "If parameters do not update, please restart VRChat or manually enable OSC yourself in your avatar's expressions menu.");
+
+            Utils.TimeBeginPeriod(1);
         }
-        
-        _mutator.Load();
-        
+
+        await _mutator.Load();
+
         // Begin main OSC update loop
         _logger.LogDebug("Starting OSC update loop...");
-        Utils.TimeBeginPeriod(1);
-        return Task.CompletedTask;
     }
 }

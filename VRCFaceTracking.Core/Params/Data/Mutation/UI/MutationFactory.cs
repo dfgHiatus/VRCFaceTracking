@@ -21,8 +21,8 @@ public static class MutationComponentFactory
         string name,
         float min,
         float max,
-        object instance, 
-        object value, 
+        object instance,
+        object value,
         FieldInfo field,
         ObservableCollection<IMutationComponent> components)
     {
@@ -74,7 +74,7 @@ public static class MutationComponentFactory
                 {
                     var valueArray = value as Array;
                     Type enumType = attribute.EnumType;
-                    
+
                     for (int i = 0; i < valueArray.Length; i++)
                     {
                         var name = Enum.GetName(enumType, i);

@@ -25,11 +25,11 @@ public class MutationProperty : IMutationComponent, INotifyPropertyChanged
     private object _value;
     private readonly Action<object> _updateField;
 
-    public MutationProperty(string name, 
-                            object value, 
-                            MutationPropertyType type, 
-                            Action<object> updateField, 
-                            float min, 
+    public MutationProperty(string name,
+                            object value,
+                            MutationPropertyType type,
+                            Action<object> updateField,
+                            float min,
                             float max)
     {
         Name = name;
@@ -72,11 +72,11 @@ public class MutationRangeProperty : IMutationComponent, INotifyPropertyChanged
     private float _item2;
     private readonly Action<(float, float)> _updateField;
 
-    public MutationRangeProperty(string name, 
-                                 float item1, 
-                                 float item2, 
-                                 Action<(float, float)> updateField, 
-                                 float min, 
+    public MutationRangeProperty(string name,
+                                 float item1,
+                                 float item2,
+                                 Action<(float, float)> updateField,
+                                 float min,
                                  float max)
     {
         Name = name;

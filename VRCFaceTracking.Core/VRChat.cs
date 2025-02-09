@@ -6,10 +6,10 @@ namespace VRCFaceTracking.Core;
 
 public static class VRChat
 {
-    public static readonly string VRCData = Path.Combine($"{Environment.GetEnvironmentVariable("localappdata")}Low", "VRChat\\VRChat");
-        
+    public static readonly string VRCData = Path.Combine($"{Environment.GetEnvironmentVariable("localappdata")}Low", Path.Combine("VRChat", "VRChat"));
+
     public static readonly string VRCOSCDirectory = Path.Combine(VRCData, "OSC");
-        
+
     [SupportedOSPlatform("windows")]
     public static bool ForceEnableOsc()
     {
@@ -17,7 +17,7 @@ public static class VRChat
         var regKey = Registry.CurrentUser.OpenSubKey("Software\\VRChat\\VRChat", true);
         if (regKey == null)
             return true;    // Assume we already have osc enabled
-            
+
         var keys = regKey.GetValueNames().Where(x => x.StartsWith("VRC_INPUT_OSC") || x.StartsWith("UI.Settings.Osc"));
 
         var wasOscForced = false;
@@ -33,6 +33,6 @@ public static class VRChat
 
         return wasOscForced;
     }
-        
+
     public static bool IsVrChatRunning() => Process.GetProcesses().Any(x => x.ProcessName == "VRChat");
 }
