@@ -27,7 +27,7 @@ public class AvatarConfigParser
         }
 
         var paramList = new List<Parameter>();
-            
+
         /*if (newId.StartsWith("local:"))
         {
             foreach (var parameter in UnifiedTracking.AllParameters_v2.Concat(UnifiedTracking.AllParameters_v1).ToArray())
@@ -39,13 +39,13 @@ public class AvatarConfigParser
             _lastAvatarId = newId;
             return (new NullAvatarDef(newId.Substring(10), newId), paramList);
         }*/
-            
+
         AvatarConfigFile avatarConfig = null;
         foreach (var userFolder in Directory.GetDirectories(VRChat.VRCOSCDirectory)
                      .Where(folder => Directory.Exists(Path.Combine(folder, "Avatars"))))
         {
-            foreach (var avatarFile in Directory.GetFiles(userFolder + "\\Avatars"))
-            {    
+            foreach (var avatarFile in Directory.GetFiles(Path.Combine(userFolder, "Avatars")))
+            {
                 var configText = await File.ReadAllTextAsync(avatarFile);
                 var tempConfig = JsonSerializer.Deserialize<AvatarConfigFile>(configText);
                 if (tempConfig == null || tempConfig.id != newId)
