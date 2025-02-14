@@ -6,7 +6,44 @@ namespace VRCFaceTracking.Core;
 
 public static class VRChat
 {
-    public static readonly string VRCData = Path.Combine($"{Environment.GetEnvironmentVariable("localappdata")}Low", Path.Combine("VRChat", "VRChat"));
+    private static string VRCData
+    {
+        get
+        {
+#if WINDOWS_DEBUG || WINDOWS_RELEASE
+            // On Windows, VRChat's OSC folder is under %appdata%/LocalLow/VRChat/VRChat
+            return Path.Combine(
+                $"{Environment.GetEnvironmentVariable("localappdata")}Low",
+                "VRChat", "VRChat"
+            );
+#else
+            /* On Linux, things are a little different. The above points to a non-existent folder
+             * Thankfully, we can make some assumptions based on the fact VRChat on Linux runs through Proton
+             * For reference, here is what a target path looks like:
+             * /home/USER_NAME/.steam/steam/steamapps/compatdata/438100/pfx/drive_c/users/steamuser/AppData/LocalLow/VRChat/VRChat/OSC/
+             * Where 438100 is VRChat's Steam GameID, and the path after "steam" is pretty much fixed */
+
+            // 1) First, get the user profile folder
+            // (/home/USER_NAME/)
+            string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+
+            // 2) Then, search for common Steam install paths
+            // (/home/USER_NAME/.steam/steam/)
+            string[] possiblePaths =
+            {
+                Path.Combine(home, ".steam", "steam"),
+                Path.Combine(home, ".local", "share", "Steam"),
+                Path.Combine(home, ".var", "app", "com.valvesoftware.Steam", ".local", "share", "Steam")
+            };
+            string steamPath = Array.Find(possiblePaths, Directory.Exists) ?? string.Empty;
+
+            // 3) Finally, append the fixed path to find the OSC folder.
+            return string.IsNullOrEmpty(steamPath) ?
+                throw new DirectoryNotFoundException("Could not detect Steam install!") :
+                Path.Combine(steamPath, "steamapps", "compatdata", "438100", "pfx", "drive_c", "users", "steamuser", "AppData", "LocalLow", "VRChat", "VRChat");
+#endif
+        }
+    }
 
     public static readonly string VRCOSCDirectory = Path.Combine(VRCData, "OSC");
 
