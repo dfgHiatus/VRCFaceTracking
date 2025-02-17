@@ -85,6 +85,8 @@ public static class fti_osc
     private const string DllName = "fti_osc.dylib";
 #elif LINUX_DEBUG || LINUX_RELEASE
     private const string DllName = "fti_osc.so";
+#else
+    #error
 #endif
 
     /// <summary>
