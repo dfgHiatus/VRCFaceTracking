@@ -77,7 +77,8 @@ public struct OscMessageMeta {
 }
 
 // Simple Rust OSC Lib wrapper
-public static class fti_osc {
+public static class fti_osc
+{
 #if WINDOWS_DEBUG || WINDOWS_RELEASE
     private const string DllName = "fti_osc.dll";
 #elif MACOS_DEBUG || MACOS_RELEASE

@@ -5,7 +5,7 @@
         <Nullable>enable</Nullable>
         <TargetFrameworks>net7.0;net8.0</TargetFrameworks>
         <LangVersion>latestmajor</LangVersion>
-        <Configurations>Debug;Release;Linux Debug;Windows Release;MacOS Debug;Windows Debug;MacOS Release;Linux Release</Configurations>
+        <Configurations>Linux Debug;Windows Release;MacOS Debug;Windows Debug;MacOS Release;Linux Release</Configurations>
         <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
