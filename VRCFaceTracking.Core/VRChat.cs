@@ -1,51 +1,66 @@
 ﻿using System.Diagnostics;
 using System.Runtime.Versioning;
+using Gameloop.Vdf;
 using Microsoft.Win32;
 
 namespace VRCFaceTracking.Core;
 
 public static class VRChat
 {
-    private static string VRCData
+    static VRChat()
     {
-        get
-        {
 #if WINDOWS_DEBUG || WINDOWS_RELEASE
-            // On Windows, VRChat's OSC folder is under %appdata%/LocalLow/VRChat/VRChat
-            return Path.Combine(
-                $"{Environment.GetEnvironmentVariable("localappdata")}Low",
-                "VRChat", "VRChat"
-            );
+        VRCOSCDirectory = Path.Combine(
+                $"{Environment.GetEnvironmentVariable("localappdata")}Low", "VRChat", "VRChat", "OSC"
+        );
 #else
-            /* On Linux, things are a little different. The above points to a non-existent folder
-             * Thankfully, we can make some assumptions based on the fact VRChat on Linux runs through Proton
-             * For reference, here is what a target path looks like:
-             * /home/USER_NAME/.steam/steam/steamapps/compatdata/438100/pfx/drive_c/users/steamuser/AppData/LocalLow/VRChat/VRChat/OSC/
-             * Where 438100 is VRChat's Steam GameID, and the path after "steam" is pretty much fixed */
+        /* On macOS/Linux, things are a little different. The above points to a non-existent folder
+         * Thankfully, we can make some assumptions based on the fact VRChat on Linux runs through Proton
+         * For reference, here is what a target path looks like:
+         * /home/USER_NAME/.steam/steam/steamapps/compatdata/438100/pfx/drive_c/users/steamuser/AppData/LocalLow/VRChat/VRChat/OSC/
+         * Where 438100 is VRChat's Steam GameID, and the path after "steam" is pretty much fixed */
 
-            // 1) First, get the user profile folder
-            // (/home/USER_NAME/)
-            string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        // 1) Get where steam is installed
+        using var process = new Process();
+        process.StartInfo.FileName = "which";
+        process.StartInfo.Arguments = "steam";
+        process.StartInfo.RedirectStandardOutput = true;
+        process.StartInfo.UseShellExecute = false;
+        process.StartInfo.CreateNoWindow = true;
+        process.Start();
 
-            // 2) Then, search for common Steam install paths
-            // (/home/USER_NAME/.steam/steam/)
-            string[] possiblePaths =
+        var steamPath = process.StandardOutput.ReadLine();
+        process.WaitForExit();
+
+        // 2) Inside the steam install directory, find the file steamPath/steamapps/libraryfolders.vdf
+        // This is a special file that tells us where on a users computer their steam libraries are
+        var steamLibrariesPaths = Path.Combine(steamPath!, "steamapps", "libraryfolders.vdf");
+        dynamic volvo = VdfConvert.Deserialize(File.ReadAllText(steamLibrariesPaths));
+
+        string vrchatPath = null!;
+        foreach (dynamic library in volvo.Value)
+        {
+            if (library.Value["path"] != null && library.Value["apps"] != null)
             {
-                Path.Combine(home, ".steam", "steam"),
-                Path.Combine(home, ".local", "share", "Steam"),
-                Path.Combine(home, ".var", "app", "com.valvesoftware.Steam", ".local", "share", "Steam")
-            };
-            string steamPath = Array.Find(possiblePaths, Directory.Exists) ?? string.Empty;
+                string libraryPath = library.Value["path"].ToString();
+                dynamic apps = library.Value["apps"];
 
-            // 3) Finally, append the fixed path to find the OSC folder.
-            return string.IsNullOrEmpty(steamPath) ?
-                throw new DirectoryNotFoundException("Could not detect Steam install!") :
-                Path.Combine(steamPath, "steamapps", "compatdata", "438100", "pfx", "drive_c", "users", "steamuser", "AppData", "LocalLow", "VRChat", "VRChat");
-#endif
+                // From this, determine which of all the libraries has the VRChat install via its AppID (438100)
+                if (apps != null && apps.ContainsKey(438100))
+                {
+                    vrchatPath = libraryPath;
+                    break;
+                }
+            }
         }
+
+        // 3) Finally, construct the path to the user's VRChat install
+        VRCOSCDirectory = Path.Combine(vrchatPath, "steamapps", "compatdata", "438100", "pfx", "drive_c",
+            "users", "steamuser", "AppData", "LocalLow", "VRChat", "VRChat", "OSC");
+#endif
     }
 
-    public static readonly string VRCOSCDirectory = Path.Combine(VRCData, "OSC");
+    public static string VRCOSCDirectory { get; }
 
     [SupportedOSPlatform("windows")]
     public static bool ForceEnableOsc()
