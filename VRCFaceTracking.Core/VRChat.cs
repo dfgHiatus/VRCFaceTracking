@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Runtime.Versioning;
+using Gameloop.Vdf;
+using Gameloop.Vdf.Linq;
 using Microsoft.Win32;
 
 namespace VRCFaceTracking.Core;
@@ -62,7 +64,7 @@ public static class VRChat
             throw new InvalidProgramException("Steam was detected, but VRChat was not detected on this system! Is it installed?");
 
         // 4) Finally, construct the path to the user's VRChat install
-        return Path.Combine(vrchatPath, "steamapps", "compatdata", "438100", "pfx", "drive_c",
+        VRCOSCDirectory = Path.Combine(vrchatPath, "steamapps", "compatdata", "438100", "pfx", "drive_c",
             "users", "steamuser", "AppData", "LocalLow", "VRChat", "VRChat", "OSC");
 #endif
     }
