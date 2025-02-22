@@ -19,28 +19,6 @@ public class InstallableTrackingModule : TrackingModuleMetadata, INotifyProperty
 {
     public bool IsInstalled => InstallationState == InstallState.Installed;
 
-    [JsonIgnore]
-    public ICommand IncrementOrderCommand
-    {
-        get;
-    }
-
-    [JsonIgnore]
-    public ICommand DecrementOrderCommand
-    {
-        get;
-    }
-
-    public InstallableTrackingModule()
-    {
-        IncrementOrderCommand = new RelayCommand(IncrementOrder);
-        DecrementOrderCommand = new RelayCommand(DecrementOrder);
-    }
-
-    private void IncrementOrder() => Order++;
-
-    private void DecrementOrder() => Order--;
-
     public InstallState InstallationState
     {
         get; set;
