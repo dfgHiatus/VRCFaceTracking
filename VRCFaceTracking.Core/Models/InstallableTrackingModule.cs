@@ -1,4 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using System.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using System.Windows.Input;
+using Newtonsoft.Json;
+using System.Runtime.CompilerServices;
+using VRCFaceTracking.Core.Contracts.Services;
 
 namespace VRCFaceTracking.Core.Models;
 
@@ -10,16 +15,77 @@ public enum InstallState
     AwaitingRestart
 }
 
-public class InstallableTrackingModule : TrackingModuleMetadata
+public class InstallableTrackingModule : TrackingModuleMetadata, INotifyPropertyChanged
 {
+    public bool IsInstalled => InstallationState == InstallState.Installed;
+
+    [JsonIgnore]
+    public ICommand IncrementOrderCommand
+    {
+        get;
+    }
+
+    [JsonIgnore]
+    public ICommand DecrementOrderCommand
+    {
+        get;
+    }
+
+    public InstallableTrackingModule()
+    {
+        IncrementOrderCommand = new RelayCommand(IncrementOrder);
+        DecrementOrderCommand = new RelayCommand(DecrementOrder);
+    }
+
+    private void IncrementOrder() => Order++;
+
+    private void DecrementOrder() => Order--;
+
     public InstallState InstallationState
     {
         get; set;
     }
-    
+
+    private bool _instantiable = true;
+
+    public bool Instantiatable
+    {
+        get => _instantiable;
+        set
+        {
+            if (_instantiable != value)
+            {
+                _instantiable = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    private int _order = 0;
+    public int Order
+    {
+        get => _order;
+        set
+        {
+            if (_order != value)
+            {
+                _order = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     [JsonIgnore]
     public string AssemblyLoadPath
     {
         get; set;
+    }
+
+    public bool Local { get; set; } = false;
+
+    public event PropertyChangedEventHandler PropertyChanged;
+    protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

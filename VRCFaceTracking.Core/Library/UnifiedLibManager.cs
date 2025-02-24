@@ -60,7 +60,9 @@ public class UnifiedLibManager : ILibManager
             TeardownAllAndResetAsync();
 
             // Find all modules
-            var modules = _moduleDataService.GetInstalledModules().Concat(_moduleDataService.GetLegacyModules());
+            var modules = _moduleDataService.GetInstalledModules()
+                                            .OrderBy(m => m.Order)
+                                            .Where(m => m.Instantiatable == true);
             var modulePaths = modules.Select(m => m.AssemblyLoadPath);
 
             // Load all modules
