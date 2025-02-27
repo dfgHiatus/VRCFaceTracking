@@ -19,9 +19,18 @@ public class InstallableTrackingModule : TrackingModuleMetadata, INotifyProperty
 {
     public bool IsInstalled => InstallationState == InstallState.Installed;
 
+    private InstallState _installState;
     public InstallState InstallationState
     {
-        get; set;
+        get => _installState;
+        set
+        {
+            if (_installState != value)
+            {
+                _installState = value;
+                OnPropertyChanged();
+            }
+        }
     }
 
     private bool _instantiable = true;
