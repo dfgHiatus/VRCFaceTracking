@@ -7,22 +7,22 @@
     <AssemblyVersion>5.2.3.0</AssemblyVersion>
     <TargetFrameworks>net7.0;net8.0</TargetFrameworks>
     <LangVersion>latestmajor</LangVersion>
-    <Configurations>Debug;Release;Windows;MacOS;Linux;Linux Debug;Windows Release;MacOS Debug;Windows Debug;MacOS Release;Linux Release</Configurations>
-  </PropertyGroup>
+	<Configurations>Debug;Release;Windows;MacOS;Linux;Linux Debug;Windows Release;MacOS Debug;Windows Debug;MacOS Release;Linux Release</Configurations>
+	</PropertyGroup>
 
 	<ItemGroup>
 	  <!-- Windows-specific -->
-	  <Content Include="..\fti_osc.dll" Link="fti_osc.dll" Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+	  <Content Include="..\fti_osc.dll" Link="fti_osc.dll" Condition="'$(Configuration)' == 'Windows' OR '$(Configuration)' == 'Windows Debug' OR '$(Configuration)' == 'Windows Release'">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
 
 	  <!-- macOS-specific -->
-	  <Content Include="..\fti_osc.dylib" Link="fti_osc.dylib" Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+	  <Content Include="..\fti_osc.dylib" Link="fti_osc.dylib" Condition="'$(Configuration)' == 'MacOS' OR '$(Configuration)' == 'MacOS Debug' OR '$(Configuration)' == 'MacOS Release'">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
 
 	  <!-- Linux-specific -->
-	  <Content Include="..\fti_osc.so" Link="fti_osc.so" Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+	  <Content Include="..\fti_osc.so" Link="fti_osc.so" Condition="'$(Configuration)' == 'Linux' OR '$(Configuration)' == 'Linux Debug' OR '$(Configuration)' == 'Linux Release'">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
 	</ItemGroup>
