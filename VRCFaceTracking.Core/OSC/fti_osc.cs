@@ -22,11 +22,7 @@ public struct OscValue {
     [MarshalAs(UnmanagedType.I1)]
     public bool BoolValue;
 
-#if WINDOWS_DEBUG || WINDOWS_RELEASE
-    [MarshalAs(UnmanagedType.LPStr)]
-#else
     [MarshalAs(UnmanagedType.LPUTF8Str)]
-#endif
     public string StringValue; // Use IntPtr for pointer types
 
     public object Value
@@ -62,11 +58,7 @@ public struct OscValue {
 
 [StructLayout(LayoutKind.Sequential)]
 public struct OscMessageMeta {
-#if WINDOWS_DEBUG || WINDOWS_RELEASE
-    [MarshalAs(UnmanagedType.LPStr)]
-#else
     [MarshalAs(UnmanagedType.LPUTF8Str)]
-#endif
     public string Address;
 
     [MarshalAs(UnmanagedType.U4)]
@@ -79,15 +71,7 @@ public struct OscMessageMeta {
 // Simple Rust OSC Lib wrapper
 public static class fti_osc
 {
-#if WINDOWS_DEBUG || WINDOWS_RELEASE
-    private const string DllName = "fti_osc.dll";
-#elif MACOS_DEBUG || MACOS_RELEASE
-    private const string DllName = "fti_osc.dylib";
-#elif LINUX_DEBUG || LINUX_RELEASE
-    private const string DllName = "fti_osc.so";
-#else
-    #error
-#endif
+    private const string DllName = "fti_osc";
 
     /// <summary>
     /// Parses a byte buffer of specified length into a single pointer to an osc message
