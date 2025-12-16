@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Runtime.Versioning;
+using System.Text.RegularExpressions;
 using Gameloop.Vdf;
 using Gameloop.Vdf.Linq;
 using Microsoft.Win32;
@@ -126,5 +127,5 @@ public static class VRChat
         return wasOscForced;
     }
 
-    public static bool IsVrChatRunning() => Process.GetProcesses().Any(x => x.ProcessName == "VRChat");
+    public static bool IsVrChatRunning() => Process.GetProcesses().Any(x => Regex.IsMatch(x.ProcessName, "^VRChat(.exe)?$"));
 }
