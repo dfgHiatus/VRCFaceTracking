@@ -1,26 +1,44 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>$(VftUiTargetFramework)</TargetFramework>
-    <TargetPlatformMinVersion>$(VftTargetPlatformMinVersion)</TargetPlatformMinVersion>
-    <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
-    <PublishProfile>Properties\PublishProfiles\win-$(Platform).pubxml</PublishProfile>
-    <RootNamespace>VRCFaceTracking.ModuleProcess</RootNamespace>
-    <SelfContained>true</SelfContained>
-    <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-  </PropertyGroup>
-  <ItemGroup>
-    <Manifest Include="$(ApplicationManifest)" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="System.CommandLine" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\VRCFaceTracking.Core\VRCFaceTracking.Core.csproj" />
-    <ProjectReference Include="..\VRCFaceTracking.SDK\VRCFaceTracking.SDK.csproj" />
-  </ItemGroup>
-  <Target Name="CopyExecutable" AfterTargets="Build">
-    <Copy SourceFiles="$(OutputPath)VRCFaceTracking.ModuleProcess.exe" DestinationFolder="..\VRCFaceTracking\" SkipUnchangedFiles="true" />
-  </Target>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <TargetPlatformMinVersion>$(VftTargetPlatformMinVersion)</TargetPlatformMinVersion>
+        <RuntimeIdentifiers>win-x86;win-x64;win-arm64;linux-x64;linux-arm64;osx-x64;osx-arm64</RuntimeIdentifiers>
+        <PublishProfile>Properties\PublishProfiles\win-$(Platform).pubxml</PublishProfile>
+        <RootNamespace>VRCFaceTracking.ModuleProcess</RootNamespace>
+        <SelfContained>true</SelfContained>
+        <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
+        <ApplicationManifest Condition="$([MSBuild]::IsOSPlatform('Windows'))">app.manifest</ApplicationManifest>
+        <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    </PropertyGroup>
+    <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+        <Manifest Include="$(ApplicationManifest)" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="System.CommandLine" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\VRCFaceTracking.Core\VRCFaceTracking.Core.csproj" />
+        <ProjectReference Include="..\VRCFaceTracking.SDK\VRCFaceTracking.SDK.csproj" />
+    </ItemGroup>
+    <Target Name="CopyExecutable" AfterTargets="Build" Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+        <Copy SourceFiles="$(OutputPath)VRCFaceTracking.ModuleProcess.exe" DestinationFolder="..\VRCFaceTracking\" SkipUnchangedFiles="true" />
+    </Target>
+    <Target Name="CopyExecutableLinux" AfterTargets="Build" Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+        <Copy SourceFiles="$(OutputPath)VRCFaceTracking.ModuleProcess" DestinationFolder="..\VRCFaceTracking\" SkipUnchangedFiles="true" />
+    </Target>
 </Project>
+
+<!--
+# Windows
+dotnet build -r win-x64
+
+# Linux
+dotnet build -r linux-x64
+
+# macOS
+dotnet build -r osx-arm64
+
+dotnet publish -r linux-x64 -c Release
+dotnet publish -r win-x64 -c Release
+-->
